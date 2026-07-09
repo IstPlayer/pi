@@ -1690,6 +1690,13 @@ export class InteractiveMode {
 		this.setupExtensionShortcuts(extensionRunner);
 		this.showLoadedResources({ force: false, showDiagnosticsWhenQuiet: true });
 		this.showStartupNoticesIfNeeded();
+
+		// Reload keybindings after all extensions have initialized.
+		// Extensions that replace the editor (e.g. powerline-footer) call
+		// setEditorComponent during init, which already triggers a reload.
+		// A final reload guarantees any late-bound extension keybinding
+		// race is resolved before the first user keystroke.
+		this.keybindings.reload();
 	}
 
 	private applyRuntimeSettings(): void {
